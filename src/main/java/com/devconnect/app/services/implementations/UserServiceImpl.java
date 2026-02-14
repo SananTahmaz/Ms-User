@@ -4,6 +4,8 @@ import com.devconnect.app.dtos.user.UserDto;
 import com.devconnect.app.dtos.user.UserRegisterDto;
 import com.devconnect.app.dtos.user.UserUpdateDto;
 import com.devconnect.app.entities.User;
+import com.devconnect.app.exceptions.AlreadyExistsException;
+import com.devconnect.app.exceptions.NotFoundException;
 import com.devconnect.app.mappers.UserMapper;
 import com.devconnect.app.repositories.UserRepository;
 import com.devconnect.app.services.UserService;
@@ -30,8 +32,7 @@ public class UserServiceImpl implements UserService {
         );
 
         if (isExistByUsername) {
-            // TODO: This exception will be replaced with AlreadyExistsException in future
-            throw new RuntimeException(
+            throw new AlreadyExistsException(
                     String.format("User already exists with username: %s", registerDto.getUsername())
             );
         }
@@ -46,10 +47,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto getById(Long id) {
-        // TODO: This exception will be replaced with NotFoundException in future
         User user = userRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("User not found with id: %d", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("User not found with id: %d", id)));
         return userMapper.toDto(user);
     }
 
@@ -66,18 +66,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto update(Long id, UserUpdateDto updateDto) {
-        // TODO: This exception will be replaced with NotFoundException in future
         User user = userRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("User not found with id: %d", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("User not found with id: %d", id)));
 
         boolean isExistByUsername = userRepository.existsByUsernameContainingIgnoreCase(
                 updateDto.getUsername().toLowerCase(Locale.ROOT).trim()
         );
 
         if (isExistByUsername) {
-            // TODO: This exception will be replaced with AlreadyExistsException in future
-            throw new RuntimeException(
+            throw new AlreadyExistsException(
                     String.format("User already exists with username: %s", updateDto.getUsername())
             );
         }
@@ -90,10 +88,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Long id) {
-        // TODO: This exception will be replaced with NotFoundException in future
         User user = userRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("User not found with id: %d", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("User not found with id: %d", id)));
         userRepository.delete(user);
     }
 }
