@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
 @NoArgsConstructor
@@ -45,7 +46,11 @@ public class User {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void prePersist() {
+    @PreUpdate
+    public void preProcess() {
+        if (username != null) {
+            username = username.toLowerCase(Locale.ROOT).trim();
+        }
         if (userRole == null) {
             userRole = UserRole.USER;
         }
