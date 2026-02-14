@@ -12,7 +12,6 @@ public class UserDto {
     private String middleName;
     private String lastName;
     private String username;
-    private String hashedPassword;
     private UserRole userRole;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
