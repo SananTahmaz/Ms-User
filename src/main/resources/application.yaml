@@ -1,3 +1,16 @@
 spring:
   application:
     name: ms-user
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/ms_user_db
+    username: test_user
+    password: test@pass
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8082
