@@ -2,6 +2,7 @@ package com.devconnect.app.services.implementations;
 
 import com.devconnect.app.dtos.user.UserDto;
 import com.devconnect.app.dtos.user.UserRegisterDto;
+import com.devconnect.app.dtos.user.UserSearchDto;
 import com.devconnect.app.dtos.user.UserUpdateDto;
 import com.devconnect.app.entities.User;
 import com.devconnect.app.exceptions.AlreadyExistsException;
@@ -9,8 +10,13 @@ import com.devconnect.app.exceptions.NotFoundException;
 import com.devconnect.app.mappers.UserMapper;
 import com.devconnect.app.repositories.UserRepository;
 import com.devconnect.app.services.UserService;
+import com.devconnect.app.specifications.UserSpecification;
 import com.devconnect.app.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +67,28 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> search(UserSearchDto searchDto, Sort sort) {
+        Sort defaultSort = sort.isUnsorted()
+                ? Sort.by(Sort.Direction.DESC, "createdAt")
+                : sort;
+
+        Specification<User> userSpecification = UserSpecification.build(searchDto);
+        return userRepository
+                .findAll(userSpecification, defaultSort)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<UserDto> search(UserSearchDto searchDto, Pageable pageable) {
+        Specification<User> userSpecification = UserSpecification.build(searchDto);
+        return userRepository
+                .findAll(userSpecification, pageable)
+                .map(userMapper::toDto);
     }
 
     @Override
