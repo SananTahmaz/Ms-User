@@ -14,11 +14,11 @@ public class UserMapper {
     private final ModelMapper modelMapper;
 
     public UserDto toDto(User user) {
-        return modelMapper.map(User.class, UserDto.class);
+        return modelMapper.map(user, UserDto.class);
     }
 
     public User toEntity(UserRegisterDto registerDto) {
-        return modelMapper.map(UserRegisterDto.class, User.class);
+        return modelMapper.map(registerDto, User.class);
     }
 
     public void updateEntity(UserUpdateDto updateDto, User user) {
