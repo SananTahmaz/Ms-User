@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto register(UserRegisterDto registerDto) {
-        boolean isExistByUsername = userRepository.existsByUsernameContainingIgnoreCase(
+        boolean isExistByUsername = userRepository.existsByUsernameIgnoreCase(
                 registerDto.getUsername().toLowerCase(Locale.ROOT).trim()
         );
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User not found with id: %d", id)));
 
-        boolean isExistByUsername = userRepository.existsByUsernameContainingIgnoreCase(
+        boolean isExistByUsername = userRepository.existsByUsernameIgnoreCase(
                 updateDto.getUsername().toLowerCase(Locale.ROOT).trim()
         );
 
