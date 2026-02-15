@@ -70,14 +70,16 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User not found with id: %d", id)));
 
-        boolean isExistByUsername = userRepository.existsByUsernameIgnoreCase(
-                updateDto.getUsername().toLowerCase(Locale.ROOT).trim()
-        );
-
-        if (isExistByUsername) {
-            throw new AlreadyExistsException(
-                    String.format("User already exists with username: %s", updateDto.getUsername())
+        if (!user.getUsername().equals(updateDto.getUsername().toLowerCase(Locale.ROOT).trim())) {
+            boolean isExistByUsername = userRepository.existsByUsernameIgnoreCase(
+                    updateDto.getUsername().toLowerCase(Locale.ROOT).trim()
             );
+
+            if (isExistByUsername) {
+                throw new AlreadyExistsException(
+                        String.format("User already exists with username: %s", updateDto.getUsername())
+                );
+            }
         }
 
         userMapper.updateEntity(updateDto, user);
