@@ -3,10 +3,15 @@ package com.devconnect.app.controllers;
 import com.devconnect.app.dtos.common.ApiResponse;
 import com.devconnect.app.dtos.user.UserDto;
 import com.devconnect.app.dtos.user.UserRegisterDto;
+import com.devconnect.app.dtos.user.UserSearchDto;
 import com.devconnect.app.dtos.user.UserUpdateDto;
 import com.devconnect.app.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +47,26 @@ public class UserController {
         List<UserDto> userDtoList = userService.getAll();
         return new ResponseEntity<>(
                 ApiResponse.success(userDtoList, "User list fetched successfully"),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<UserDto>>> searchAll(UserSearchDto searchDto, Sort sort) {
+        List<UserDto> userDtoList = userService.search(searchDto, sort);
+        return new ResponseEntity<>(
+                ApiResponse.success(userDtoList, "User list fetched successfully"),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/search/paginated")
+    public ResponseEntity<ApiResponse<Page<UserDto>>> searchPaginated(
+            UserSearchDto searchDto,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<UserDto> userDtoPage = userService.search(searchDto, pageable);
+        return new ResponseEntity<>(
+                ApiResponse.success(userDtoPage, "User list fetched successfully"),
                 HttpStatus.OK
         );
     }
